@@ -1,9 +1,12 @@
 # pychaoxingsigner😋
 
 ChaoXing Signer.
+
 Written in Python🐍
+
 API inspired from [chaoxing-signin](https://github.com/cxOrz/chaoxing-signin/blob/main/apps/server/src/configs/api.ts).
-Only supports locational signing in for now. (Since u could do others on ur app isnt it 😘)
+
+Only supports locational signin for now. (Since u could do others on ur app isnt it 😘)
 
 This script will run over ur courses and check if theres an activity 1 by 1, then sign it in. U could DIY `test.py` if u know a lil' 'bout Python🐍 :\)
 
@@ -27,5 +30,5 @@ This should work on Termux, which allows your phone to sign you in.
 
 ## Todo✍️
 
-- [ ] Selfie signing in.
+- [ ] Selfie signin.
 - [ ] Multithreading.
