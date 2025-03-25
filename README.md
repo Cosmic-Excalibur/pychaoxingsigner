@@ -18,7 +18,7 @@ cd pychaoxingsigner
 python -r requirements.txt
 ```
 
-Fill in `phone` (ur ℡, which is your account), `pwd` (ur password), `name` (ur name), `addr` (the address for locational signing in), `lonlat` (longitude & latitude) in `test.py`. Get the last two on [Baidu Map](https://api.map.baidu.com/lbsapi/getpoint/index.html).
+Fill in `phone` (ur ℡, which is your account), `pwd` (ur password), `name` (ur name), `addr` (the address for locational signin), `lonlat` (longitude & latitude) in `test.py`. Get `lonlat` on [Baidu Map](https://api.map.baidu.com/lbsapi/getpoint/index.html), and `addr` a reasonable address that doesn't make u seem like a bot🤖.
 
 Then run
 ```bash
