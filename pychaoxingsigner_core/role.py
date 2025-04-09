@@ -113,7 +113,7 @@ class Role:
             return False
         else:
             logger.info('login: Welcome, %s.', self.phone)
-            cookie_str = res.headers['Set-Cookie'].replace('HttpOnly, ', '')
+            cookie_str = res.headers['Set-Cookie'].replace('HttpOnly, ', '').replace('Path=/, ', '')
             cookie_dict = SimpleCookie(cookie_str)
             if '_uid' not in cookie_dict or \
                '_d'   not in cookie_dict or \
@@ -123,8 +123,8 @@ class Role:
                'vc2'  not in cookie_dict or \
                'vc3'  not in cookie_dict:
                 logger.warn('login: A probably malformed cookie detected.')
-            else:
-                cookie_str = '; '.join(f"{k}={v.value}" for k, v in cookie_dict.items()) + ';'
+            # else:
+                # cookie_str = '; '.join(f"{k}={v.value}" for k, v in cookie_dict.items()) + ';'
             self.cookie = Cookie(cookie_str, self.phone)
         return True
     
