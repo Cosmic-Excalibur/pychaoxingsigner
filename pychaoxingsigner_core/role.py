@@ -71,6 +71,7 @@ class Role:
         self.phone = phone
         self.pwd = pwd
         self.name = None
+        self.last_response = None
         if cookie is None:
             self.cookie = Cookie.load_user(phone)
             if self.cookie is not None:
@@ -94,11 +95,13 @@ class Role:
             data = API.login.data(uname, password),
             headers = API.login.headers()
         )
+        self.last_response = res.text
         if res.status_code != 200:
             logger.error('login: Failed with status code %d.', res.status_code)
             return False
         try:
             data = json.loads(res.text)
+            self.last_response = data
         except json.decoder.JSONDecodeError:
             logger.error('login: JSON decode error: %s', res.text)
             return False
@@ -110,8 +113,8 @@ class Role:
             return False
         else:
             logger.info('login: Welcome, %s.', self.phone)
-            cookie_str = res.headers['Set-Cookie']
-            cookie_dict = SimpleCookie(cookie_str.replace('HttpOnly, ', ''))
+            cookie_str = res.headers['Set-Cookie'].replace('HttpOnly, ', '')
+            cookie_dict = SimpleCookie(cookie_str)
             if '_uid' not in cookie_dict or \
                '_d'   not in cookie_dict or \
                'UID'  not in cookie_dict or \
@@ -119,7 +122,7 @@ class Role:
                'fid'  not in cookie_dict or \
                'vc2'  not in cookie_dict or \
                'vc3'  not in cookie_dict:
-                logger.warn('login: A probably malformed cookie detected: %s', cookie_str)
+                logger.warn('login: A probably malformed cookie detected.')
             else:
                 cookie_str = '; '.join(f"{k}={v.value}" for k, v in cookie_dict.items()) + ';'
             self.cookie = Cookie(cookie_str, self.phone)
@@ -132,6 +135,7 @@ class Role:
             data = API.course_list.data(),
             headers = API.course_list.headers(self.cookie.cookie_str)
         )
+        self.last_response = res.text
         if res.status_code != 200:
             logger.error('get_courses: Failed with status code %d.', res.status_code)
             return []
@@ -162,11 +166,13 @@ class Role:
                 params = API.active_list.params(course.courseId, course.classId),
                 headers = API.active_list.headers(self.cookie.cookie_str)
             )
+            self.last_response = res.text
             if res.status_code != 200:
                 logger.error('iter_active: %s failed with status code %d.', course, res.status_code)
                 continue
             try:
                 data = json.loads(res.text)
+                self.last_response = data
             except json.decoder.JSONDecodeError:
                 logger.error('iter_active: %s JSON decode error: %s', course, res.text)
                 continue
@@ -199,6 +205,7 @@ class Role:
             params = API.pre_sign_analysis.params(activeId),
             headers = API.pre_sign_analysis.headers(self.cookie.cookie_str)
         )
+        self.last_response = res.text
         if res.status_code != 200:
             logger.warn('pre_sign: Analysis failed with status code %d.', res.status_code)
             return
@@ -216,6 +223,7 @@ class Role:
             params = API.pre_sign_analysis2.params(code),
             headers = API.pre_sign_analysis.headers(self.cookie.cookie_str)
         )
+        self.last_response = res.text
         if res.status_code != 200:
             logger.warn('pre_sign: Analysis2 failed with status code %d.', res.status_code)
             return
@@ -234,6 +242,7 @@ class Role:
             params = API.sign_location.params(name, address, activeId, self.cookie['_uid'].value, lon, lat, self.cookie['fid'].value),
             headers = API.sign_location.headers(self.cookie.cookie_str)
         )
+        self.last_response = res.text
         if res.status_code != 200:
             logger.error('sign_location: Failed with status code %d.', res.status_code)
             return
